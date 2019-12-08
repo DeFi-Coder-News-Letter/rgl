@@ -187,7 +187,7 @@ FaceSet::FaceSet(
 )
 : PrimitiveSet(in_material, in_nelements, in_vertex, in_type, in_nverticesperelement, in_ignoreExtent, in_bboxChange)
 {
-  if (material.lit) {
+  if (material.lit || in_useNormals) {
     normalArray.alloc(nvertices);
     if (in_useNormals) {
       for(int i=0;i<nvertices;i++) {
@@ -239,7 +239,7 @@ void FaceSet::initFaceSet(
   bool useNormals = (in_normals) ? true : false;
   bool useTexcoords = (in_texcoords) ? true : false;
 
-  if (material.lit) {
+  if (material.lit || useNormals) {
     normalArray.alloc(nvertices);
     if (useNormals) {
       for(int i=0;i<nvertices;i++) {
@@ -298,10 +298,7 @@ void FaceSet::drawEnd(RenderContext* renderContext)
 int FaceSet::getAttributeCount(AABox& bbox, AttribID attrib)
 {
   switch (attrib) {
-    case NORMALS: if (material.lit)
-    		    return nvertices;
-    		  else
-    		    return 0;
+    case NORMALS: return nvertices;
     case TEXCOORDS: return texCoordArray.size();
   }
   return PrimitiveSet::getAttributeCount(bbox, attrib);
